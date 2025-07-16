@@ -1,0 +1,223 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.5.0/remixicon.min.css');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light theme colors */
+    --background: 255 255 255;
+    --foreground: 15 23 42;
+    --card: 255 255 255;
+    --card-foreground: 15 23 42;
+    --popover: 255 255 255;
+    --popover-foreground: 15 23 42;
+    --primary: 37 99 235;
+    --primary-foreground: 255 255 255;
+    --secondary: 241 245 249;
+    --secondary-foreground: 15 23 42;
+    --muted: 241 245 249;
+    --muted-foreground: 100 116 139;
+    --accent: 241 245 249;
+    --accent-foreground: 15 23 42;
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
+    --border: 226 232 240;
+    --input: 226 232 240;
+    --ring: 37 99 235;
+    --radius: 0.5rem;
+    --navbar-bg: 255 255 255;
+    --navbar-text: 55 65 81;
+    --navbar-hover: 37 99 235;
+  }
+
+  .dark {
+    /* Dark theme colors */
+    --background: 17 24 39;
+    --foreground: 248 250 252;
+    --card: 31 41 55;
+    --card-foreground: 248 250 252;
+    --popover: 31 41 55;
+    --popover-foreground: 248 250 252;
+    --primary: 59 130 246;
+    --primary-foreground: 15 23 42;
+    --secondary: 55 65 81;
+    --secondary-foreground: 248 250 252;
+    --muted: 55 65 81;
+    --muted-foreground: 156 163 175;
+    --accent: 55 65 81;
+    --accent-foreground: 248 250 252;
+    --destructive: 239 68 68;
+    --destructive-foreground: 248 250 252;
+    --border: 75 85 99;
+    --input: 75 85 99;
+    --ring: 59 130 246;
+    --navbar-bg: 17 24 39;
+    --navbar-text: 209 213 219;
+    --navbar-hover: 59 130 246;
+  }
+}
+
+@layer base {
+  * {
+    border-color: rgb(var(--border));
+  }
+  
+  body {
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+@layer utilities {
+  .bg-navbar {
+    background-color: rgb(var(--navbar-bg));
+  }
+  
+  .text-navbar {
+    color: rgb(var(--navbar-text));
+  }
+  
+  .text-navbar-hover:hover {
+    color: rgb(var(--navbar-hover));
+  }
+  
+  .bg-card {
+    background-color: rgb(var(--card));
+  }
+  
+  .text-card {
+    color: rgb(var(--card-foreground));
+  }
+  
+  .bg-primary {
+    background-color: rgb(var(--primary));
+  }
+  
+  .text-primary {
+    color: rgb(var(--primary));
+  }
+  
+  .bg-secondary {
+    background-color: rgb(var(--secondary));
+  }
+  
+  .text-secondary {
+    color: rgb(var(--secondary-foreground));
+  }
+  
+  .border-custom {
+    border-color: rgb(var(--border));
+  }
+
+  /* Section backgrounds */
+  .bg-section {
+    background-color: rgb(var(--background));
+  }
+  
+  .bg-section-alt {
+    background-color: rgb(var(--secondary));
+  }
+  
+  /* Text utilities */
+  .text-heading {
+    color: rgb(var(--foreground));
+  }
+  
+  .text-body {
+    color: rgb(var(--muted-foreground));
+  }
+  
+  /* Component backgrounds with transparency support */
+  .bg-card-hover:hover {
+    background-color: rgb(var(--card) / 0.8);
+  }
+  
+  /* Gradient overlays that work in both themes */
+  .overlay-light {
+    background: linear-gradient(to right, rgb(37 99 235 / 0.3), rgb(59 130 246 / 0.2));
+  }
+  
+  .overlay-dark {
+    background: linear-gradient(to right, rgb(17 24 39 / 0.8), rgb(31 41 55 / 0.6));
+  }
+
+  /* Loading bar shimmer animation */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  
+  .animate-shimmer {
+    animation: shimmer 1.5s infinite;
+  }
+
+  /* Navigation menu item styles */
+  .nav-menu-item {
+    color: #EAC8A6;
+    transition: color 0.2s ease;
+  }
+  
+  .nav-menu-item:hover {
+    color: #93C5FD !important;
+  }
+
+  /* Scroll animation utilities */
+  .scroll-animate-fade-in {
+    animation: scrollFadeIn 1s ease-out forwards;
+  }
+
+  .scroll-animate-slide-up {
+    animation: scrollSlideUp 1s ease-out forwards;
+  }
+
+  .scroll-animate-scale-in {
+    animation: scrollScaleIn 1s ease-out forwards;
+  }
+
+  @keyframes scrollFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scrollSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scrollScaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9) translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  /* Staggered animation delays */
+  .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-300 { animation-delay: 300ms; }
+  .animate-delay-400 { animation-delay: 400ms; }
+  .animate-delay-500 { animation-delay: 500ms; }
+  .animate-delay-600 { animation-delay: 600ms; }
+}
