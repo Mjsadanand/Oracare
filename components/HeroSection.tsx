@@ -10,8 +10,10 @@ export default function HeroSection() {
   const [currentVideo, setCurrentVideo] = useState(0);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
+  const [videoErrors, setVideoErrors] = useState<boolean[]>([false, false, false]);
 
-  // Video sources array - your actual video paths
+  // Video sources array - optimized for mobile
   const videoSources = [
     '/video/back.mp4',
     '/video/back1.mp4', 
@@ -19,23 +21,63 @@ export default function HeroSection() {
   ];
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentVideo((prev) => (prev + 1) % videoSources.length);
-    }, 8000); // Longer duration for videos
+    // Detect mobile device
+    const checkMobile = () => {
+      const isMobileDevice = window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobile(isMobileDevice);
+    };
 
-    return () => clearInterval(interval);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   useEffect(() => {
+    // Slower transitions on mobile to give videos time to load
+    const interval = setInterval(() => {
+      setCurrentVideo((prev) => (prev + 1) % videoSources.length);
+    }, isMobile ? 10000 : 8000); // 10 seconds on mobile, 8 on desktop
+
+    return () => clearInterval(interval);
+  }, [isMobile]);
+
+  useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
+      // Reduce mouse tracking on mobile for performance
+      if (isMobile) return;
+      
       const x = (e.clientX / window.innerWidth) * 2 - 1;
       const y = (e.clientY / window.innerHeight) * 2 - 1;
       setMousePosition({ x, y });
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+    if (!isMobile) {
+      window.addEventListener('mousemove', handleMouseMove);
+    }
+    
+    return () => {
+      if (!isMobile) {
+        window.removeEventListener('mousemove', handleMouseMove);
+      }
+    };
+  }, [isMobile]);
+
+  const handleVideoError = (index: number) => {
+    setVideoErrors(prev => {
+      const newErrors = [...prev];
+      newErrors[index] = true;
+      return newErrors;
+    });
+  };
+
+  const handleVideoLoad = (index: number) => {
+    setVideoErrors(prev => {
+      const newErrors = [...prev];
+      newErrors[index] = false;
+      return newErrors;
+    });
+    setIsVideoLoaded(true);
+  };
 
   const scrollToServices = () => {
     const servicesSection = document.getElementById('services');
@@ -67,14 +109,14 @@ export default function HeroSection() {
               index === currentVideo ? 'opacity-100 scale-105' : 'opacity-0 scale-100'
             }`}
             style={{
-              transform: `
+              transform: isMobile ? 'none' : `
                 translateX(${mousePosition.x * 8}px) 
                 translateY(${mousePosition.y * 8}px) 
                 rotateX(${mousePosition.y * 1.5}deg) 
                 rotateY(${mousePosition.x * 1.5}deg)
                 scale(${index === currentVideo ? 1.05 : 1})
               `,
-              transformStyle: 'preserve-3d'
+              transformStyle: isMobile ? 'flat' : 'preserve-3d'
             }}
           >
             <video
@@ -83,17 +125,25 @@ export default function HeroSection() {
               muted
               loop
               playsInline
-              preload="metadata"
-              onLoadedData={() => setIsVideoLoaded(true)}
-              onError={() => setIsVideoLoaded(false)}
+              preload={isMobile ? "none" : "metadata"}
+              poster={`/images/video-poster-${index + 1}.jpg`}
+              onLoadedData={() => handleVideoLoad(index)}
+              onError={() => handleVideoError(index)}
+              onCanPlay={() => setIsVideoLoaded(true)}
               style={{
                 transition: 'all 0.3s ease'
               }}
             >
               <source src={videoSrc} type="video/mp4" />
-              <source src={videoSrc.replace('.mp4', '.webm')} type="video/webm" />
               Your browser does not support the video tag.
             </video>
+            
+            {/* Loading indicator for videos */}
+            {!isVideoLoaded && index === currentVideo && (
+              <div className="absolute inset-0 bg-gray-900 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -103,61 +153,63 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-black/20" />
       </div>
 
-      {/* 3D Floating Elements */}
-      <div className="absolute inset-0 overflow-hidden perspective-1000 z-15">
-        <div 
-          className="absolute top-20 left-10 w-4 h-4 bg-blue-400/50 rounded-full animate-float-3d transform-gpu"
-          style={{ 
-            animationDelay: '0s', 
-            animationDuration: '5s',
-            transform: `
-              translateX(${mousePosition.x * 15}px) 
-              translateY(${mousePosition.y * 12}px) 
-              translateZ(${mousePosition.x * 8}px)
-            `,
-            transformStyle: 'preserve-3d'
-          }}
-        />
-        <div 
-          className="absolute top-40 right-20 w-6 h-6 bg-blue-500/40 rounded-full animate-float-3d transform-gpu"
-          style={{ 
-            animationDelay: '1.5s', 
-            animationDuration: '6s',
-            transform: `
-              translateX(${mousePosition.x * -12}px) 
-              translateY(${mousePosition.y * 15}px) 
-              translateZ(${mousePosition.y * 10}px)
-            `,
-            transformStyle: 'preserve-3d'
-          }}
-        />
-        <div 
-          className="absolute bottom-40 left-20 w-5 h-5 bg-blue-300/45 rounded-full animate-float-3d transform-gpu"
-          style={{ 
-            animationDelay: '3s', 
-            animationDuration: '5.5s',
-            transform: `
-              translateX(${mousePosition.x * 10}px) 
-              translateY(${mousePosition.y * -8}px) 
-              translateZ(${mousePosition.x * -6}px)
-            `,
-            transformStyle: 'preserve-3d'
-          }}
-        />
-        <div 
-          className="absolute bottom-20 right-10 w-3 h-3 bg-blue-600/50 rounded-full animate-float-3d transform-gpu"
-          style={{ 
-            animationDelay: '1s', 
-            animationDuration: '4s',
-            transform: `
-              translateX(${mousePosition.x * -6}px) 
-              translateY(${mousePosition.y * -10}px) 
-              translateZ(${mousePosition.y * 8}px)
-            `,
-            transformStyle: 'preserve-3d'
-          }}
-        />
-      </div>
+      {/* 3D Floating Elements - Simplified on mobile */}
+      {!isMobile && (
+        <div className="absolute inset-0 overflow-hidden perspective-1000 z-15">
+          <div 
+            className="absolute top-20 left-10 w-4 h-4 bg-blue-400/50 rounded-full animate-float-3d transform-gpu"
+            style={{ 
+              animationDelay: '0s', 
+              animationDuration: '5s',
+              transform: `
+                translateX(${mousePosition.x * 15}px) 
+                translateY(${mousePosition.y * 12}px) 
+                translateZ(${mousePosition.x * 8}px)
+              `,
+              transformStyle: 'preserve-3d'
+            }}
+          />
+          <div 
+            className="absolute top-40 right-20 w-6 h-6 bg-blue-500/40 rounded-full animate-float-3d transform-gpu"
+            style={{ 
+              animationDelay: '1.5s', 
+              animationDuration: '6s',
+              transform: `
+                translateX(${mousePosition.x * -12}px) 
+                translateY(${mousePosition.y * 15}px) 
+                translateZ(${mousePosition.y * 10}px)
+              `,
+              transformStyle: 'preserve-3d'
+            }}
+          />
+          <div 
+            className="absolute bottom-40 left-20 w-5 h-5 bg-blue-300/45 rounded-full animate-float-3d transform-gpu"
+            style={{ 
+              animationDelay: '3s', 
+              animationDuration: '5.5s',
+              transform: `
+                translateX(${mousePosition.x * 10}px) 
+                translateY(${mousePosition.y * -8}px) 
+                translateZ(${mousePosition.x * -6}px)
+              `,
+              transformStyle: 'preserve-3d'
+            }}
+          />
+          <div 
+            className="absolute bottom-20 right-10 w-3 h-3 bg-blue-600/50 rounded-full animate-float-3d transform-gpu"
+            style={{ 
+              animationDelay: '1s', 
+              animationDuration: '4s',
+              transform: `
+                translateX(${mousePosition.x * -6}px) 
+                translateY(${mousePosition.y * -10}px) 
+                translateZ(${mousePosition.y * 8}px)
+              `,
+              transformStyle: 'preserve-3d'
+            }}
+          />
+        </div>
+      )}
 
       {/* Simplified Content Container - No 3D transforms on container */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-50">
@@ -341,6 +393,35 @@ export default function HeroSection() {
         /* Ensure buttons are always on top */
         .container {
           pointer-events: auto !important;
+        }
+
+        /* Mobile performance optimizations */
+        @media (max-width: 768px) {
+          .transform-gpu {
+            transform: none !important;
+            will-change: auto !important;
+          }
+          
+          .animate-float-3d {
+            display: none;
+          }
+          
+          video {
+            object-fit: cover;
+            object-position: center;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+          }
+          
+          .perspective-1000 {
+            perspective: none;
+          }
+          
+          /* Disable heavy 3D transforms on mobile */
+          * {
+            transform-style: flat !important;
+            backface-visibility: visible !important;
+          }
         }
 
         /* Override any potential transform issues */

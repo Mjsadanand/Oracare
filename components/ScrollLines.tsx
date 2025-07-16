@@ -44,34 +44,47 @@ export default function ScrollLines() {
       setSections(newSections);
     };
 
-    // Initial setup
-    setTimeout(updateSections, 100); // Delay to ensure DOM is ready
+    // Initial setup with longer delay for mobile
+    const initialDelay = window.innerWidth < 768 ? 300 : 100;
+    setTimeout(updateSections, initialDelay);
     
+    let scrollTimeout: NodeJS.Timeout;
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setScrollY(currentScrollY);
+      // Throttle scroll events for better performance
+      if (scrollTimeout) return;
       
-      // Find active section
-      const windowCenter = currentScrollY + window.innerHeight / 2;
-      const current = sections.findIndex(section => 
-        windowCenter >= section.top && windowCenter <= section.bottom
-      );
-      
-      if (current !== -1 && current !== activeSection) {
-        setActiveSection(current);
-      }
+      scrollTimeout = setTimeout(() => {
+        const currentScrollY = window.scrollY;
+        setScrollY(currentScrollY);
+        
+        // Find active section
+        const windowCenter = currentScrollY + window.innerHeight / 2;
+        const current = sections.findIndex(section => 
+          windowCenter >= section.top && windowCenter <= section.bottom
+        );
+        
+        if (current !== -1 && current !== activeSection) {
+          setActiveSection(current);
+        }
+        scrollTimeout = null as any;
+      }, 16); // ~60fps throttling
     };
 
+    let resizeTimeout: NodeJS.Timeout;
     const handleResize = () => {
-      updateSections();
+      // Debounce resize events
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(updateSections, 150);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize, { passive: true });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
@@ -135,6 +148,7 @@ export default function ScrollLines() {
                   style={{
                     transform: `scaleX(${shouldAnimate ? Math.min(progress * 1.5, 1) : 0})`,
                     filter: shouldAnimate ? 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))' : 'none',
+                    willChange: 'transform',
                   }}
                 >
                   {/* Animated shimmer effect */}
@@ -142,6 +156,7 @@ export default function ScrollLines() {
                     className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-shimmer"
                     style={{
                       animation: shouldAnimate ? 'shimmer 2s infinite' : 'none',
+                      willChange: 'transform',
                     }}
                   />
                 </div>
@@ -151,6 +166,7 @@ export default function ScrollLines() {
                   className={`absolute inset-0 h-3 bg-gradient-to-r ${section.color} rounded-full blur-md opacity-30 transition-all duration-700 ease-out origin-center`}
                   style={{
                     transform: `scaleX(${shouldAnimate ? Math.min(progress * 1.2, 1) : 0}) scaleY(2)`,
+                    willChange: 'transform',
                   }}
                 />
                 
@@ -177,8 +193,8 @@ export default function ScrollLines() {
         );
       })}
 
-      {/* Enhanced side progress indicator */}
-      <div className="fixed right-6 top-1/2 transform -translate-y-1/2 z-20">
+      {/* Enhanced side progress indicator - Hidden on mobile */}
+      <div className="fixed right-6 top-1/2 transform -translate-y-1/2 z-20 hidden lg:block">
         <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-3 shadow-xl border border-custom">
           <div className="space-y-4">
             {sections.map((section, index) => {
@@ -221,10 +237,10 @@ export default function ScrollLines() {
         </div>
       </div>
 
-      {/* Enhanced floating particles with physics */}
+      {/* Enhanced floating particles with physics - Reduced on mobile */}
       {scrollY > 100 && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(8)].map((_, i) => {
+          {[...Array(window.innerWidth < 768 ? 4 : 8)].map((_, i) => {
             const colors = ['bg-blue-400', 'bg-purple-400', 'bg-pink-400', 'bg-red-400', 'bg-orange-400'];
             const color = colors[i % colors.length];
             
@@ -237,6 +253,7 @@ export default function ScrollLines() {
                   top: `${(i * 17 + Math.cos(scrollY * 0.008 + i) * 30) % 100}%`,
                   animationDelay: `${i * 0.7}s`,
                   animationDuration: `${4 + (i % 3)}s`,
+                  willChange: 'transform',
                 }}
               />
             );

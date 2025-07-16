@@ -19,9 +19,13 @@ export default function Home() {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
+    // Reduce loader time on mobile for better UX
+    const isMobile = window.innerWidth < 768;
+    const loaderDuration = isMobile ? 2000 : 3000; // 2s on mobile, 3s on desktop
+    
     const timer = setTimeout(() => {
       setShowLoader(false);
-    }, 5000); // 5 seconds
+    }, loaderDuration);
 
     return () => clearTimeout(timer);
   }, []);

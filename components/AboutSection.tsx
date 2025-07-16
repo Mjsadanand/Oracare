@@ -40,11 +40,11 @@ export default function AboutSection() {
                   : 'opacity-0 translate-y-20'
               }`}
             >
-              <p className="text-lg text-body mb-6 leading-relaxed" style={{ fontFamily: 'Pacifico, cursive' }}>
+              <p className="text-lg text-body mb-6 leading-relaxed">
                 Healthcare Unified Platform for Excellence (HOPE) represents the future of oral healthcare management. 
                 Our platform integrates cutting-edge technology with proven medical practices to deliver exceptional patient care.
               </p>
-              <p className="text-lg text-body mb-8 leading-relaxed" style={{ fontFamily: 'Pacifico, cursive' }}>
+              <p className="text-lg text-body mb-8 leading-relaxed">
                 We believe in empowering healthcare professionals with the tools they need to provide accurate diagnoses, 
                 efficient treatment planning, and comprehensive patient management in a unified digital environment.
               </p>

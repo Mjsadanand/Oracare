@@ -220,4 +220,32 @@
   .animate-delay-400 { animation-delay: 400ms; }
   .animate-delay-500 { animation-delay: 500ms; }
   .animate-delay-600 { animation-delay: 600ms; }
+
+  /* Mobile performance optimizations */
+  @media (max-width: 768px) {
+    * {
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      perspective: 1000px;
+    }
+    
+    .animate-float-enhanced {
+      animation-duration: 6s !important;
+      will-change: transform;
+    }
+    
+    /* Disable some animations on mobile for better performance */
+    .animate-pulse,
+    .animate-ping {
+      animation: none;
+    }
+    
+    /* Simplify gradients on mobile */
+    .bg-gradient-to-r,
+    .bg-gradient-to-l,
+    .bg-gradient-to-t,
+    .bg-gradient-to-b {
+      background-attachment: scroll;
+    }
+  }
 }
