@@ -107,18 +107,18 @@ export default function Chatbot() {
     <>
       <div className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 transition-all duration-300 ${
         isOpen 
-          ? 'w-full h-full sm:w-96 sm:h-96 max-w-sm sm:max-w-none inset-0 sm:inset-auto' 
+          ? 'w-96 h-96' 
           : 'w-auto h-auto'
       }`}>
         {isOpen ? (
-          <div className="bg-card rounded-none sm:rounded-2xl shadow-2xl border-0 sm:border border-custom flex flex-col h-full">
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-3 sm:p-4 rounded-none sm:rounded-t-2xl flex items-center justify-between">
-              <div className="flex items-center space-x-2 sm:space-x-3">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-full flex items-center justify-center">
-                  <i className="ri-customer-service-2-line text-xs sm:text-sm w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center"></i>
+          <div className="bg-card rounded-2xl shadow-2xl border border-custom flex flex-col h-full">
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-t-2xl flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <i className="ri-customer-service-2-line text-sm w-4 h-4 flex items-center justify-center"></i>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-sm sm:text-base">HOPE Assistant</h3>
+                  <h3 className="font-semibold text-base">HOPE Assistant</h3>
                   <p className="text-xs text-blue-100">Online now</p>
                 </div>
               </div>
@@ -127,18 +127,18 @@ export default function Chatbot() {
                 className="text-white/80 hover:text-white transition-colors cursor-pointer p-1"
                 title="Close chat"
               >
-                <i className="ri-close-line text-lg sm:text-xl w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center"></i>
+                <i className="ri-close-line text-xl w-5 h-5 flex items-center justify-center"></i>
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.map((message) => (
                 <div
                   key={message.id}
                   className={`flex ${message.isBot ? 'justify-start' : 'justify-end'}`}
                 >
                   <div
-                    className={`max-w-[85%] sm:max-w-xs px-3 sm:px-4 py-2 rounded-2xl text-sm ${
+                    className={`max-w-xs px-4 py-2 rounded-2xl text-sm ${
                       message.isBot
                         ? 'bg-secondary text-card'
                         : 'bg-primary text-white'
@@ -151,7 +151,7 @@ export default function Chatbot() {
               
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-secondary px-3 sm:px-4 py-2 rounded-2xl">
+                  <div className="bg-secondary px-4 py-2 rounded-2xl">
                     <div className="flex space-x-1">
                       <div className="w-2 h-2 bg-body rounded-full animate-bounce"></div>
                       <div className="w-2 h-2 bg-body rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
@@ -165,13 +165,13 @@ export default function Chatbot() {
             </div>
 
             {messages.length === 1 && (
-              <div className="px-3 sm:px-4 pb-2">
-                <div className="flex flex-wrap gap-1 sm:gap-2">
+              <div className="px-4 pb-2">
+                <div className="flex flex-wrap gap-2">
                   {quickReplies.map((reply, index) => (
                     <button
                       key={index}
                       onClick={() => handleSendMessage(reply)}
-                      className="px-2 sm:px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full text-xs hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors cursor-pointer whitespace-nowrap"
+                      className="px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full text-xs hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors cursor-pointer whitespace-nowrap"
                     >
                       {reply}
                     </button>
@@ -180,7 +180,7 @@ export default function Chatbot() {
               </div>
             )}
 
-            <div className="p-3 sm:p-4 border-t border-custom">
+            <div className="p-4 border-t border-custom">
               <div className="flex space-x-2">
                 <input
                   type="text"
@@ -193,7 +193,7 @@ export default function Chatbot() {
                 <button
                   onClick={() => handleSendMessage()}
                   disabled={!inputText.trim()}
-                  className="bg-primary text-white px-3 sm:px-4 py-2 rounded-lg hover:opacity-90 disabled:bg-gray-300 dark:disabled:bg-gray-600 transition-all cursor-pointer whitespace-nowrap"
+                  className="bg-primary text-white px-4 py-2 rounded-lg hover:opacity-90 disabled:bg-gray-300 dark:disabled:bg-gray-600 transition-all cursor-pointer whitespace-nowrap"
                   title="Send message"
                 >
                   <i className="ri-send-plane-line w-4 h-4 flex items-center justify-center"></i>
@@ -204,10 +204,10 @@ export default function Chatbot() {
         ) : (
           <button
             onClick={() => setIsOpen(true)}
-            className="bg-primary text-white w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-lg hover:opacity-90 transition-all duration-300 flex items-center justify-center hover:scale-110 cursor-pointer"
+            className="bg-primary text-white w-14 h-14 rounded-full shadow-lg hover:opacity-90 transition-all duration-300 flex items-center justify-center hover:scale-110 cursor-pointer"
             title="Open chat"
           >
-            <i className="ri-customer-service-2-line text-lg sm:text-xl w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center"></i>
+            <i className="ri-customer-service-2-line text-xl w-6 h-6 flex items-center justify-center"></i>
           </button>
         )}
       </div>
