@@ -27,22 +27,8 @@ export const metadata: Metadata = {
   title: "Oracare",
   description: "Built with the passion to revolutionize oral healthcare, Oracare is your trusted partner in delivering advanced dental solutions. Our platform connects patients with top-notch dental professionals, ensuring quality care and innovative treatments.",
   icons: {
-    icon: [
-      { url: '/public/images/favicon.ico' },
-      { url: '/public/images/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/public/images/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/public/images/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-    other: [
-      {
-        rel: 'apple-touch-icon-precomposed',
-        url: '/public/images/apple-touch-icon.png.png',
-      },
-    ],
+    icon: "/favicon.ico"
   },
-  manifest: '/site.webmanifest',
 };
 
 export default function RootLayout({
